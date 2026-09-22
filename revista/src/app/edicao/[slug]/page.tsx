@@ -101,6 +101,11 @@ export default async function PaginaEdicao({ params }: Props) {
             <time dateTime={meta.publicadoEm} className="text-[var(--color-ink-faint)]">
               {dataLonga(meta.publicadoEm)}
             </time>
+            {meta.atualizadoEm && (
+              <span className="text-[var(--color-ink-faint)]">
+                atualizada em <time dateTime={meta.atualizadoEm}>{dataLonga(meta.atualizadoEm)}</time>
+              </span>
+            )}
           </div>
 
           <h1 className="mt-4 text-[clamp(1.85rem,5.2vw,2.85rem)] leading-[1.1] font-semibold tracking-[-0.02em] text-balance">

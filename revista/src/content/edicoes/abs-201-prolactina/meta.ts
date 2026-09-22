@@ -11,6 +11,9 @@ export const meta: EdicaoMeta = {
   resumo:
     'O ABS-201 é um anticorpo monoclonal desenhado por inteligência artificial que bloqueia o receptor de prolactina (PRLR). É a primeira tentativa séria de tratar a alopecia androgenética por uma via que não passa pela di-hidrotestosterona. Em junho de 2026 a Absci divulgou os dados intermediários de Fase 1: nenhum evento adverso grave em 32 voluntários saudáveis e uma meia-vida estimada em pelo menos 65 dias, o que permitiria duas ou três injeções por semestre. No mesmo dia a empresa levantou US$ 100 milhões, incluindo US$ 40 milhões da Eli Lilly. Nada disso, porém, é evidência de que a droga faça cabelo crescer em gente careca: até a data desta edição, nenhum dado de eficácia em humanos com alopecia foi publicado. Esta edição reconstrói o que se sabe em três níveis de leitura.',
   publicadoEm: '2026-09-22',
+  // Correção no mesmo dia: os três níveis tratavam os +14 fios/cm² do HMI-115
+  // como teto da classe sem registrar o argumento de ocupação de receptor.
+  atualizadoEm: '2026-09-22',
   palavrasChave: [
     'alopecia androgenética',
     'receptor de prolactina',
@@ -20,9 +23,9 @@ export const meta: EdicaoMeta = {
     'Absci',
   ],
   tempoLeitura: {
-    leigo: 6,
-    intermediario: 12,
-    especialista: 19,
+    leigo: 7,
+    intermediario: 14,
+    especialista: 24,
   },
   chamada: {
     leigo: 'O cabelo tem um freio de mão. Uma droga nova tenta soltá-lo — e ninguém ainda sabe se funciona.',
@@ -87,8 +90,15 @@ export const meta: EdicaoMeta = {
     {
       rotulo: 'Comparador de classe (HMI-115)',
       valor: '+14 fios não-velo/cm²',
-      detalhe: 'sobre o basal, em Fase 1b — não é comparação direta',
-      refs: ['revisao-anticorpos'],
+      detalhe: 'sobre o basal, em Fase 1b com 240 mg a cada duas semanas — não é comparação direta',
+      refs: ['hmi115-fase1b', 'revisao-anticorpos'],
+    },
+    {
+      rotulo: 'Ocupação de receptor visada',
+      valor: '> 90%',
+      detalhe:
+        'projeção de modelo da Absci; estima 50–70% para o regime do HMI-115. Não medida em humanos para nenhum dos dois',
+      refs: ['caso-absci', 'absci-teleconferencia-q2'],
     },
     {
       rotulo: 'Financiamento',
@@ -128,6 +138,12 @@ export const meta: EdicaoMeta = {
       resposta:
         'A prolactina age como sinal de término do ciclo do fio: empurra o folículo da fase de crescimento para a fase de regressão. O folículo humano tem receptores para ela e produz um pouco dela localmente. A hipótese do ABS-201 é que esse freio esteja sendo acionado cedo demais no couro cabeludo de quem está calvo.',
       refs: ['exvivo', 'practical-derm'],
+    },
+    {
+      pergunta: 'O resultado do HMI-115 mostra o limite dos bloqueadores de prolactina?',
+      resposta:
+        'Provavelmente não mostra. Na Fase 1b, o HMI-115 foi aplicado em 240 mg a cada duas semanas, e a Absci estima por modelagem que esse regime ocupava só 50% a 70% dos receptores de prolactina, abaixo dos 90% que considera necessários. A estimativa é de uma concorrente e a ocupação nunca foi medida em humanos, nem para o HMI-115 nem para o ABS-201.',
+      refs: ['hmi115-fase1b', 'caso-absci'],
     },
     {
       pergunta: 'Quando o ABS-201 pode chegar ao mercado?',
