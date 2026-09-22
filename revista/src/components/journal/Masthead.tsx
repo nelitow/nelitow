@@ -6,6 +6,7 @@ const NAV = [
   { href: '/arquivo', rotulo: 'Arquivo', sempre: true },
   // Dropped on the narrowest screens, where four items plus the brand would
   // force the nameplate to wrap onto two lines.
+  { href: '/normas', rotulo: 'Normas', sempre: false },
   { href: '/metodologia', rotulo: 'Metodologia', sempre: false },
   { href: '/sobre', rotulo: 'Sobre', sempre: true },
 ]

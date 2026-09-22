@@ -69,6 +69,37 @@ export interface Referencia {
   tipo: 'primaria' | 'secundaria' | 'literatura' | 'registro'
 }
 
+/**
+ * Fato isolado, com unidade e fonte — a unidade que um mecanismo generativo
+ * consegue extrair e citar sem precisar interpretar o artigo inteiro.
+ */
+export interface DadoChave {
+  rotulo: string
+  valor: string
+  detalhe?: string
+  /** Ids de `referencias.ts` que sustentam o número. */
+  refs?: string[]
+}
+
+/**
+ * Pergunta real com resposta direta e autossuficiente (40–70 palavras).
+ * Vive só na página-âncora da edição, nunca repetida nos três níveis: o mesmo
+ * bloco em quatro URLs seria conteúdo duplicado.
+ */
+export interface Pergunta {
+  pergunta: string
+  resposta: string
+  refs?: string[]
+}
+
+/** Entidade nomeada para `about`/`mentions` nos dados estruturados. */
+export interface Entidade {
+  nome: string
+  tipo: 'Drug' | 'MedicalCondition' | 'Organization' | 'MedicalEntity'
+  /** Só URLs verificadas. Um `sameAs` inventado é pior que nenhum. */
+  sameAs?: string[]
+}
+
 export interface EdicaoMeta {
   /** URL segment and folder name. */
   slug: string
@@ -89,6 +120,14 @@ export interface EdicaoMeta {
   tempoLeitura: Record<Nivel, number>
   /** Short teaser per level, shown on the cover. */
   chamada: Record<Nivel, string>
+  /** Verifiable facts, shown on the edição's anchor page. */
+  dadosChave: DadoChave[]
+  /** Direct answers to the questions people actually type. */
+  perguntas: Pergunta[]
+  /** What this edição is about, for structured data. */
+  entidades: Entidade[]
+  /** One sentence answering the headline question, for the anchor page lede. */
+  respostaCurta: string
   /** Set false while drafting; drafts are excluded from listings and feeds. */
   publicado: boolean
 }

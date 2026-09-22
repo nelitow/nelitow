@@ -17,9 +17,11 @@ export function Rodape() {
             <ul className="space-y-1.5 font-sans text-[0.8125rem]">
               {[
                 { href: '/arquivo', rotulo: 'Arquivo completo' },
+                { href: '/normas', rotulo: 'Normas de redação' },
                 { href: '/metodologia', rotulo: 'Como apuramos' },
                 { href: '/sobre', rotulo: 'Sobre a revista' },
                 { href: '/feed.xml', rotulo: 'RSS' },
+                { href: '/llms.txt', rotulo: 'llms.txt' },
               ].map((item) => (
                 <li key={item.href}>
                   <Link

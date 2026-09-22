@@ -54,6 +54,63 @@ export function vizinhas(slug: string): { anterior?: Edicao; proxima?: Edicao } 
   return { anterior: publicadas[i + 1], proxima: publicadas[i - 1] }
 }
 
+/** Normaliza um tema para URL: sem acento, sem espaço. */
+export function temaParaSlug(tema: string): string {
+  return tema
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+/** Todos os temas publicados, com contagem, do mais frequente ao menos. */
+export function listarTemas(): { tema: string; slug: string; total: number }[] {
+  const contagem = new Map<string, number>()
+
+  for (const { meta } of listarEdicoes()) {
+    for (const palavra of meta.palavrasChave) {
+      contagem.set(palavra, (contagem.get(palavra) ?? 0) + 1)
+    }
+  }
+
+  return [...contagem.entries()]
+    .map(([tema, total]) => ({ tema, slug: temaParaSlug(tema), total }))
+    .sort((a, b) => b.total - a.total || a.tema.localeCompare(b.tema, 'pt-BR'))
+}
+
+export function buscarTema(slug: string) {
+  const encontrado = listarTemas().find((t) => t.slug === slug)
+  if (!encontrado) return null
+
+  return {
+    ...encontrado,
+    edicoes: listarEdicoes().filter(({ meta }) => meta.palavrasChave.includes(encontrado.tema)),
+  }
+}
+
+/**
+ * Edições que compartilham palavras-chave com esta, mais compartilhadas
+ * primeiro. É o que liga uma sequência de posts diários num assunto contínuo.
+ */
+export function relacionadas(slug: string, limite = 4): Edicao[] {
+  const atual = buscarEdicao(slug)
+  if (!atual) return []
+
+  const chaves = new Set(atual.meta.palavrasChave)
+
+  return listarEdicoes()
+    .filter((e) => e.meta.slug !== slug)
+    .map((e) => ({
+      edicao: e,
+      peso: e.meta.palavrasChave.filter((p) => chaves.has(p)).length,
+    }))
+    .filter(({ peso }) => peso > 0)
+    .sort((a, b) => b.peso - a.peso)
+    .slice(0, limite)
+    .map(({ edicao }) => edicao)
+}
+
 export async function carregarNivel(slug: string, nivel: Nivel) {
   const edicao = buscarEdicao(slug)
   if (!edicao) return null

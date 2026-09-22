@@ -10,11 +10,14 @@ import { Calibragem } from '@/components/Calibragem'
 import { NivelSwitcher } from '@/components/NivelSwitcher'
 import { ProgressoLeitura } from '@/components/ProgressoLeitura'
 import { SumarioArtigo } from '@/components/SumarioArtigo'
-import { buscarEdicao, listarTodas, vizinhas } from '@/content/registry'
+import { Migalhas } from '@/components/journal/Migalhas'
+import { Relacionadas } from '@/components/journal/Relacionadas'
+import { buscarEdicao, listarTodas, relacionadas, vizinhas } from '@/content/registry'
 import { NIVEIS, NIVEL_INFO, isNivel, type Nivel } from '@/content/types'
 import { identificador } from '@/lib/format'
+import { grafoArtigo } from '@/lib/schema'
 import { lerCalibragem } from '@/lib/store'
-import { SITE, urlAbsoluta } from '@/lib/site'
+import { urlAbsoluta } from '@/lib/site'
 
 interface Props {
   params: Promise<{ slug: string; nivel: string }>
@@ -41,19 +44,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const caminho = `/edicao/${slug}/${nivel}`
 
   return {
+    // Título e descrição diferem por nível de propósito: as três versões
+    // atendem buscas diferentes, e é isso que impede que elas concorram
+    // entre si como se fossem duplicatas do mesmo texto.
     title: `${meta.titulo} — nível ${info.rotulo.toLowerCase()}`,
     description: meta.chamada[nivel],
     keywords: meta.palavrasChave,
-    alternates: {
-      canonical: caminho,
-      // Every level is a legitimate entry point for the same subject.
-      languages: Object.fromEntries(
-        NIVEIS.map((outro) => [`pt-BR-x-${outro}`, `/edicao/${slug}/${outro}`]),
-      ),
-    },
+    alternates: { canonical: caminho },
+    ...(meta.publicado ? {} : { robots: { index: false, follow: false } }),
     openGraph: {
       type: 'article',
-      title: meta.titulo,
+      title: `${meta.titulo} — nível ${info.rotulo.toLowerCase()}`,
       description: meta.chamada[nivel],
       url: urlAbsoluta(caminho),
       publishedTime: meta.publicadoEm,
@@ -81,24 +82,7 @@ export default async function PaginaNivel({ params }: Props) {
   const idEdicao = identificador(meta.volume, meta.numero, meta.slug)
   const urlCanonica = urlAbsoluta(`/edicao/${slug}/${nivelTipado}`)
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'ScholarlyArticle',
-    headline: meta.titulo,
-    description: meta.resumo,
-    inLanguage: SITE.idioma,
-    datePublished: meta.publicadoEm,
-    dateModified: meta.atualizadoEm ?? meta.publicadoEm,
-    keywords: meta.palavrasChave.join(', '),
-    articleSection: meta.secao,
-    url: urlCanonica,
-    isPartOf: { '@type': 'Periodical', name: SITE.nome },
-    citation: referencias.map((ref) => ({
-      '@type': 'CreativeWork',
-      name: ref.titulo,
-      url: ref.url,
-    })),
-  }
+  const relatadas = relacionadas(slug)
 
   return (
     <>
@@ -106,12 +90,23 @@ export default async function PaginaNivel({ params }: Props) {
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(grafoArtigo(meta, nivelTipado, referencias)),
+        }}
       />
 
       <div className="mx-auto max-w-5xl px-5 py-10 lg:py-14">
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_13rem] lg:gap-12">
           <article>
+            <Migalhas
+              itens={[
+                { nome: 'Capa', caminho: '/' },
+                { nome: 'Arquivo', caminho: '/arquivo' },
+                { nome: meta.titulo, caminho: `/edicao/${slug}` },
+                { nome: `Nível ${NIVEL_INFO[nivelTipado].rotulo.toLowerCase()}` },
+              ]}
+            />
+
             <CabecalhoArtigo meta={meta} nivel={nivelTipado} />
 
             <div className="mt-8">
@@ -147,7 +142,22 @@ export default async function PaginaNivel({ params }: Props) {
               publicadoEm={meta.publicadoEm}
             />
 
+            <div className="mt-10 rounded-sm border border-[var(--color-rule)] px-5 py-4">
+              <p className="font-sans text-[0.8125rem] leading-relaxed text-[var(--color-ink-muted)]">
+                Esta é uma das três leituras desta edição.{' '}
+                <Link
+                  href={`/edicao/${slug}`}
+                  className="font-semibold text-[var(--color-accent)]"
+                >
+                  A página da edição
+                </Link>{' '}
+                reúne os dados-chave, as perguntas diretas e as referências.
+              </p>
+            </div>
+
             <Calibragem slug={slug} nivel={nivelTipado} iniciais={contagens} />
+
+            <Relacionadas edicoes={relatadas} />
 
             {(anterior || proxima) && (
               <nav

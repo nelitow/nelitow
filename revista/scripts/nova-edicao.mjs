@@ -103,6 +103,29 @@ export const meta: EdicaoMeta = {
     intermediario: 'TODO: chamada de uma frase, com o número que importa.',
     especialista: 'TODO: chamada de uma frase, com a ressalva metodológica.',
   },
+
+  // Uma frase que responde à pergunta do título. Aparece em destaque na página
+  // da edição e é a passagem mais provável de ser citada fora dela, então
+  // precisa se sustentar sozinha, com data e magnitude.
+  respostaCurta: 'TODO.',
+
+  // Fatos isolados, com unidade e fonte. É o formato mais extraível que existe.
+  dadosChave: [
+    // { rotulo: 'Meia-vida estimada', valor: '≥ 65 dias', detalhe: 'ressalva', refs: ['chave'] },
+  ],
+
+  // Perguntas que as pessoas realmente digitam. Resposta de 40 a 70 palavras,
+  // autossuficiente: nada de "sim", "não" ou "como vimos acima".
+  perguntas: [
+    // { pergunta: 'TODO?', resposta: 'TODO.', refs: ['chave'] },
+  ],
+
+  // Entidades para os dados estruturados. Só use "sameAs" com URL verificada:
+  // um sameAs inventado é pior que nenhum.
+  entidades: [
+    // { nome: 'TODO', tipo: 'Drug', sameAs: ['https://...'] },
+  ],
+
   // Vire para true quando a edição estiver pronta para publicar.
   publicado: false,
 }
@@ -281,14 +304,18 @@ ${NIVEIS.map((n) => `      ${n}: () => import('./edicoes/${slug}/${n}.mdx'),`).j
 Edição nº ${numero} criada.
 
   src/content/edicoes/${slug}/
-    meta.ts            ← preencha título, resumo, chamadas e tempo de leitura
+    meta.ts            ← título, resumo, chamadas, resposta curta,
+                         dados-chave, perguntas e entidades
     referencias.ts     ← adicione as fontes antes de escrever
     leigo.mdx
     intermediario.mdx
     especialista.mdx
 
 Registrada em src/content/registry.ts com publicado: false.
+
 Rode "npm run dev" e abra /edicao/${slug}/leigo para escrever com preview.
+Antes de publicar, rode "npm run validar -- ${slug}" — as normas de redação
+estão em /normas e reprovam o build se violadas.
 `)
 }
 

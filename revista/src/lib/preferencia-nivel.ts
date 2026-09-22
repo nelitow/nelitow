@@ -22,3 +22,16 @@ export function lembrarNivel(nivel: Nivel): void {
 export function normalizarNivel(valor: string | undefined, padrao: Nivel = 'leigo'): Nivel {
   return valor && isNivel(valor) ? valor : padrao
 }
+
+/** Lê o nível lembrado no navegador. Devolve null quando não há preferência. */
+export function nivelLembrado(): Nivel | null {
+  try {
+    const achado = document.cookie.match(
+      new RegExp(`(?:^|;\\s*)${COOKIE_NIVEL}=([^;]*)`),
+    )
+    const valor = achado?.[1] ? decodeURIComponent(achado[1]) : undefined
+    return valor && isNivel(valor) ? valor : null
+  } catch {
+    return null
+  }
+}
