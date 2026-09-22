@@ -104,20 +104,26 @@ export function grafoAncora(meta: EdicaoMeta, referencias: Referencia[]) {
   const caminho = `/edicao/${meta.slug}`
   const url = urlAbsoluta(caminho)
 
-  const perguntas =
-    meta.perguntas.length > 0
-      ? [
-          {
-            '@type': 'FAQPage',
-            '@id': `${url}#faq`,
-            mainEntity: meta.perguntas.map((p) => ({
-              '@type': 'Question',
-              name: p.pergunta,
-              acceptedAnswer: { '@type': 'Answer', text: p.resposta },
-            })),
-          },
-        ]
-      : []
+  // O nó do FAQ e a referência a ele em `mainEntity` dependem da mesma
+  // condição. Guardá-la numa variável é o que impede que uma edição sem
+  // perguntas — o estado inicial de todo esqueleto — emita um `mainEntity`
+  // apontando para um `@id` que nunca foi declarado.
+  const temFaq = meta.perguntas.length > 0
+  const idFaq = `${url}#faq`
+
+  const perguntas = temFaq
+    ? [
+        {
+          '@type': 'FAQPage',
+          '@id': idFaq,
+          mainEntity: meta.perguntas.map((p) => ({
+            '@type': 'Question',
+            name: p.pergunta,
+            acceptedAnswer: { '@type': 'Answer', text: p.resposta },
+          })),
+        },
+      ]
+    : []
 
   return {
     '@context': 'https://schema.org',
@@ -147,7 +153,7 @@ export function grafoAncora(meta: EdicaoMeta, referencias: Referencia[]) {
           educationalLevel: NIVEL_INFO[nivel].publico,
           timeRequired: `PT${meta.tempoLeitura[nivel]}M`,
         })),
-        mainEntity: { '@id': `${url}#faq` },
+        ...(temFaq ? { mainEntity: { '@id': idFaq } } : {}),
       },
       ...perguntas,
       ...(meta.dadosChave.length > 0
