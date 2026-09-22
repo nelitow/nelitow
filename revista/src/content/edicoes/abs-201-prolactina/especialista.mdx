@@ -1,0 +1,345 @@
+import { Figura, Tabela } from '@/components/journal/Figura'
+import { Caixa } from '@/components/journal/Caixa'
+import { CurvaPK } from '@/components/figuras/CurvaPK'
+import { BarrasComparador } from '@/components/figuras/BarrasComparador'
+import { EscadaEvidencia } from '@/components/figuras/EscadaEvidencia'
+
+Toda a base documental pública do ABS-201 consiste em comunicados ao investidor, um registro em
+ClinicalTrials.gov e material institucional da própria patrocinadora. Não há publicação revisada
+por pares, não há apresentação em congresso com dados individuais, não há protocolo completo
+disponível. Esta edição é, portanto, uma leitura crítica de material promocional tecnicamente
+qualificado, e a primeira limitação a registrar é essa.
+
+O que segue assume familiaridade com farmacocinética de anticorpos, desenho de ensaios de fase
+inicial e desfechos tricológicos.
+
+## Racional molecular
+
+O eixo prolactinérgico no folículo piloso humano está razoavelmente estabelecido na literatura
+desde os trabalhos do grupo de Paus e Foitzik: o folículo expressa PRLR funcional, produz
+prolactina localmente e responde a ela com indução de catágeno. A sinalização canônica é
+JAK2→STAT5, com STAT5 fosforilado como leitura de engajamento a jusante.
+
+A premissa terapêutica do ABS-201 é que esse eixo contribui de forma não trivial para o
+encurtamento progressivo do anágeno na alopecia androgenética, e que sua inibição é aditiva ao
+bloqueio androgênico por operar a montante e por vias distintas.
+
+Note o que essa premissa exige e o que ela não exige. Ela **não** exige que o eixo
+prolactinérgico esteja hiperativo na AGA: basta que seja um freio tônico cuja remoção libere
+crescimento. Ela **exige**, porém, que a remoção desse freio produza efeito clinicamente
+mensurável num tecido cujo fator limitante primário é androgênico. Essa é a parte que nenhum dado
+pré-clínico consegue resolver.
+
+## Os desfechos ex vivo e seu alcance
+
+O conjunto ex vivo divulgado em dezembro de 2025 usou pele de couro cabeludo humana de espessura
+total, em cultura de órgão, de doadores masculinos<Cit id="exvivo" />. Os achados
+reportados<Cit id="exvivo,practical-derm" />:
+
+| Achado | Leitura | Alcance |
+|---|---|---|
+| ↓ fosforilação de STAT5 | Engajamento do alvo e bloqueio da cascata | Forte — é o desfecho farmacodinâmico correto |
+| Anágeno prolongado, catágeno induzido por PRL bloqueado | Efeito no ciclo, no modelo | Moderado — janela de cultura curta |
+| ↓ apoptose de células-tronco K15⁺; ↑ progênie CD34⁺ | Preservação do compartimento do bulge | Moderado — marcador, não desfecho |
+| ↑ IGF-1 e FGF7 foliculares; ↑ proliferação de queratinócitos da matriz | Mediadores pró-anágenos a jusante | Fraco isoladamente — inespecífico |
+
+O achado com maior peso conceitual é o do compartimento K15⁺/CD34⁺, porque é o único que
+sustenta a alegação de *reversão* de miniaturização em vez de mera prolongação de anágeno. É
+também o mais frágil como preditor: preservação de pool de células-tronco em cultura de dias não
+estabelece recuperação de arquitetura folicular em meses.
+
+A limitação estrutural do modelo é conhecida: explantes de couro cabeludo humano mantêm
+viabilidade por poucos dias e entram espontaneamente em catágeno. Mede-se, necessariamente,
+modulação de marcadores dentro de uma janela curta: nunca um ciclo completo, nunca conversão
+velo→terminal.
+
+<Caixa tipo="metodo" titulo="O biomarcador humano que não foi reportado">
+
+O comunicado de Fase 1 descreve segurança, farmacocinética e imunogenicidade. Não descreve
+**nenhum biomarcador farmacodinâmico humano** — nem inibição de STAT5 em células mononucleares,
+nem qualquer leitura de engajamento de alvo in vivo.
+
+Para um programa cuja tese depende de bloqueio de receptor mais completo e mais duradouro que o
+do comparador de classe, a ausência de um PD humano publicado é a lacuna mais relevante do
+conjunto. Pode existir e não ter sido divulgado; num comunicado que enfatiza o que há de
+favorável, a omissão é informativa.
+
+</Caixa>
+
+## Desenho do HEADLINE
+
+NCT07317544: Fase 1/2a randomizado, duplo-cego, controlado por placebo, em participantes com e
+sem AGA<Cit id="headline-registro,primeiros-dosados" />.
+
+<Tabela
+  legenda="Estrutura das duas porções do HEADLINE, conforme divulgado."
+  fonte={<>comunicados da Absci e registro em ClinicalTrials.gov<Cit id="fase1,primeiros-dosados,headline-registro" />.</>}
+>
+
+| | Porção SAD | Porção MAD / 2a |
+|---|---|---|
+| População | 32 adultos saudáveis | Participantes com AGA |
+| Via | Intravenosa | Subcutânea |
+| Doses | 150, 450, 900, 1800 mg | 300, 600, 1200 mg ou placebo |
+| Coortes | 4 | 3–4 grupos |
+| Desfechos | Segurança, tolerabilidade, PK | + TAHC, TAHW, TAHD, PRO/ClinRO |
+| Estado | Concluída (jun. 2026) | Em curso |
+
+</Tabela>
+
+Três observações de desenho.
+
+**A troca de via entre porções.** A SAD caracterizou PK por via intravenosa; a MAD — e o produto
+comercial — é subcutânea. A meia-vida terminal de um IgG é governada predominantemente por
+reciclagem FcRn e tende a se conservar entre vias, de modo que a extrapolação é defensável. Mas
+absorção SC introduz *flip-flop* potencial, biodisponibilidade tipicamente entre 50% e 80% e
+variabilidade interindividual maior. O intervalo posológico projetado é uma inferência a partir
+da via errada, e a própria empresa o condiciona a confirmação.
+
+**Faixa de dose descendente.** A MAD testa 300–1200 mg SC depois de uma SAD que chegou a 1800 mg
+IV. Considerando biodisponibilidade SC, a exposição máxima na MAD é substancialmente inferior ao
+topo explorado na SAD. Isso é conservador e coerente com um programa que busca intervalo longo em
+indicação não grave, mas significa que, se a leitura de eficácia for fraca, a hipótese de
+subdosagem permanecerá aberta e exigirá outro estudo.
+
+**Ausência de comparador ativo.** O controle é placebo. Para uma indicação com dois fármacos
+estabelecidos, isso é adequado em fase 2a, mas não gera qualquer inferência sobre aditividade a
+inibidor de 5α-redutase, que é o cenário de uso clínico mais provável. Essa pergunta fica
+integralmente para depois.
+
+## Farmacocinética: o número e o que ele aguenta
+
+O resultado central de junho: meia-vida estimada em **pelo menos 65 dias**, com base em dados
+intermediários das quatro coortes SAD, incluindo seguimento até o **dia 56** nas coortes de dose
+mais baixa<Cit id="fase1" />.
+
+<Caixa tipo="alerta" titulo="Uma meia-vida de 65 dias estimada a partir de 56 dias de coleta">
+
+Este é o ponto técnico mais importante da divulgação e ele passou batido na cobertura.
+
+Estimar meia-vida terminal exige amostragem que cubra a fase terminal de forma adequada. A regra
+prática é seguimento de ao menos três a quatro meias-vidas. Aqui, a janela de observação citada
+(56 dias) é **menor que a própria meia-vida estimada** (65 dias).
+
+Isso não torna o número errado. O fraseado "pelo menos" é cauteloso e provavelmente deliberado, e
+é perfeitamente possível que a coleta tenha se estendido além do dia 56 em coortes superiores. Mas
+uma estimativa de t½ terminal extraída de uma janela mais curta que t½ é, por construção, uma
+extrapolação: sensível à escolha dos pontos de regressão terminal, e historicamente enviesada —
+janelas curtas tendem a **subestimar** a meia-vida real quando há fase terminal lenta, e a
+superestimar quando a distribuição ainda não se completou.
+
+A confirmação com seguimento completo em todas as coortes é explicitamente prometida. Até lá, o
+intervalo posológico é uma projeção sobre uma projeção.
+
+</Caixa>
+
+<Figura
+  legenda={
+    <>
+      Acúmulo simulado para três aplicações em seis meses sob decaimento monoexponencial com t½ =
+      65 dias: o vale pré-dose sobe de 41% do primeiro pico no dia 84 para 57% no dia 168 e 64% no
+      dia 252. A sensibilidade à estimativa é grande — no dia 252 o mesmo esquema deixaria o vale
+      em 37% se o t½ real fosse de 45 dias, e em 89% se fosse de 85 dias.
+    </>
+  }
+  fonte="modelo ilustrativo; não são concentrações medidas."
+>
+  <CurvaPK />
+</Figura>
+
+A sensibilidade do esquema posológico à estimativa de t½ é o motivo pelo qual este parâmetro não é
+detalhe acadêmico: ele define se o produto é trimestral ou mensal, e a posologia é boa parte da
+proposta de valor.
+
+**Imunogenicidade.** Descrita como favorável, sem números. Para um anticorpo com meia-vida longa e
+administração crônica intermitente em população saudável, não imunossuprimida nem gravemente
+doente, a incidência de anticorpos antidroga e, sobretudo, de anticorpos neutralizantes ao longo
+de anos é um risco material. Populações dermatológicas têm histórico de ADA clinicamente
+relevante. Trinta e dois voluntários com exposição única não informam quase nada sobre isso.
+
+## Segurança: o argumento genético e seus limites
+
+A tese de segurança do programa apoia-se em genética humana: indivíduos com redução ou perda de
+sinalização de PRLR não apresentam comprometimento aparente de fertilidade, desenvolvimento mamário
+ou ciclo menstrual<Cit id="practical-derm" />.
+
+É um argumento legítimo e é o melhor disponível. Tem três limites.
+
+**Congênito não é agudo.** Perda de função ao longo da vida permite compensação de
+desenvolvimento. Bloqueio farmacológico em adulto, instalado ao longo de semanas e mantido por
+meses, é uma perturbação diferente.
+
+**Lactação.** Ausência de efeito sobre desenvolvimento mamário não é ausência de efeito sobre
+lactação estabelecida. Numa indicação que atenderá mulheres em idade reprodutiva, com uma molécula
+de meia-vida de dois meses, isso exige plano de contracepção e washout explícitos. E uma
+meia-vida longa significa que "parar o remédio" leva meses, não dias.
+
+**Prolactina sérica.** O bloqueio de PRLR remove a alça de retroalimentação negativa que a
+prolactina exerce sobre os neurônios dopaminérgicos tuberoinfundibulares. Hiperprolactinemia
+compensatória é a consequência farmacológica esperada de um antagonista de PRLR. O comunicado não
+reporta níveis séricos de prolactina. Elevação de PRL sem sinalização de PRLR é provavelmente
+inócua, mas é um achado laboratorial que confundirá investigação clínica em qualquer paciente
+que faça dosagem de prolactina por outro motivo, e merece estar na bula.
+
+Acrescente-se o ponto geral: numa condição **não grave**, o limiar regulatório de
+risco-benefício é alto. A FDA tolera pouco em alopecia androgenética, e uma molécula que não pode
+ser retirada rapidamente do organismo parte com desvantagem estrutural nesse cálculo.
+
+## Desfechos e o problema da base
+
+A MAD mede TAHC, TAHW e TAHD mais desfechos relatados<Cit id="primeiros-dosados" />. A empresa
+descreve a porção como "powered" para demonstrar prova de conceito.
+
+<Figura
+  legenda={
+    <>
+      Ganhos de contagem relatados na literatura para os tratamentos de referência e para o
+      comparador de classe. As bases de comparação diferem e isso domina a interpretação.
+    </>
+  }
+  fonte={
+    <>
+      finasterida 1 mg, 48 semanas, ganho líquido sobre placebo; minoxidil 5% e HMI-115 Fase 1b,
+      variação sobre o basal<Cit id="revisao-anticorpos" />.
+    </>
+  }
+>
+  <BarrasComparador />
+</Figura>
+
+O comparador de classe — HMI-115, ex-BAY-1158061, licenciado da Bayer pela Hope Medicine — relatou
++14 fios não-velo/cm² sobre o basal em Fase 1b e segue em Fase
+2<Cit id="hopemed,hmi115-registro,revisao-anticorpos" />.
+
+Esse número cumpre duas funções opostas na avaliação do ABS-201.
+
+**De-risca o mecanismo.** Antagonismo de PRLR produz crescimento capilar mensurável em homens com
+AGA. A via não é especulativa. Para um investidor, isso é a diferença entre risco biológico e
+risco de molécula.
+
+**E fixa uma referência incômoda.** Um ganho sobre o basal de 14 fios/cm² num estudo de fase
+inicial, sem controle concorrente, é aproximadamente o que finasterida entrega. A diferença está
+na base: o número da finasterida (+17,3 fios/cm² em 48 semanas) é **líquido sobre placebo**, o
+que o torna substancialmente mais exigente. Comparar 14-sobre-basal com 17-sobre-placebo favorece
+artificialmente o anticorpo.
+
+Se a leitura do ABS-201 vier expressa sobre o basal, ela deve ser descontada antes de qualquer
+comparação. Placebo em ensaios de alopecia não é desprezível: fotografia padronizada, corte
+padronizado da área-alvo e atenção ao couro cabeludo produzem ganho mensurável em braços de
+controle.
+
+## O 14 é piso ou teto?
+
+<Caixa tipo="correcao" titulo="Correção · 22 set. 2026">
+
+A versão original desta edição tratava os +14 fios/cm² do HMI-115 como a referência do que a
+classe consegue entregar. Faltou registrar que o regime usado naquela Fase 1b provavelmente não
+bloqueava o receptor por inteiro, e isso abre a possibilidade de o número subestimar o mecanismo.
+Esta seção foi acrescentada e a síntese, ajustada. Nenhum outro dado da edição mudou.
+
+</Caixa>
+
+A Fase 1b do HMI-115 usou 240 mg por via subcutânea a cada duas semanas, por 24 semanas, em 12
+homens e 4 mulheres<Cit id="hmi115-fase1b" />. Nenhuma medida de ocupação de receptor foi
+publicada. O que existe é a estimativa de um concorrente: a Absci afirma, com base em modelagem
+PK/PD, que esse esquema oscila entre cerca de 50% e 70% de ocupação e nunca cruza a linha de
+90%<Cit id="caso-absci,absci-teleconferencia-q2" />.
+
+Por que 90% importaria? Em tecidos com reserva de receptores, o agonista atinge resposta máxima
+ocupando uma fração pequena dos sítios disponíveis. No eixo prolactinérgico isso está documentado
+em células Nb2, que proliferam ao máximo com ocupação baixa<Cit id="goffin-nb2" />. Para um
+antagonista a consequência é contraintuitiva. Bloquear 60% dos receptores pode deixar a
+sinalização quase intacta, porque os 40% livres ainda bastam à prolactina. A inibição só aparece
+quando a fração livre cai abaixo do que o tecido exige, e esse limiar pode ficar perto de 90%.
+
+O apoio empírico ao limiar vem de primatas. No estudo da Bayer com *Macaca arctoides*, espécie que
+desenvolve calvície depois da adolescência, o anticorpo que viria a ser o HMI-115 quase dobrou a
+contagem de fios terminais em seis meses, com efeito ainda visível dois anos
+depois<Cit id="patente-bayer" />. O esquema foi intravenoso, com doses altas por quilo e
+intervalos curtos. A ocupação de cerca de 90% atribuída a esse estudo circula em material da
+Absci<Cit id="absci-teleconferencia-q2" />, não numa publicação revisada.
+
+Existe um dado independente que conversa com isso, vindo de outro tecido. No ensaio de Fase 2 do
+HMI-115 em endometriose, as doses de 60, 120 e 240 mg a cada duas semanas reduziram a dismenorreia
+em 27%, 35% e 42%, contra 19% no placebo. Só a dose mais alta se separou do placebo com
+significância<Cit id="lancet-endometriose" />. Uma curva que ainda sobe em 240 mg não mostra
+platô. É compatível com a ideia de que o regime usado em alopecia estava abaixo do topo da curva,
+mas não prova nada sobre o folículo.
+
+Considero a tese de ocupação farmacologicamente coerente, e ela explica o resultado do HMI-115 sem
+exigir que o mecanismo seja fraco. Ainda assim, continua sendo hipótese. A estimativa de 50% a 70%
+vem de uma empresa com interesse direto no argumento, calculada sobre parâmetros que ela não
+publicou. O limiar de 90% repousa num único estudo em primatas, sem curva dose-resposta
+disponível. E o ABS-201 tampouco tem ocupação medida em humanos: os mais de 90% são projeção de
+modelo<Cit id="caso-absci" />. Isso devolve ao centro a lacuna já apontada, a ausência de qualquer
+biomarcador farmacodinâmico humano.
+
+Quem arbitra a questão é o resultado de eficácia. Se o ABS-201, com cobertura sustentada do
+receptor, entregar um ganho da ordem do HMI-115 sobre placebo, a hipótese de ocupação perde força
+e o teto da classe é baixo. Se entregar claramente mais, o HMI-115 terá sido um caso de
+subdosagem. Nesse cenário a Hope Medicine terá motivo para testar doses maiores.
+
+## O que uma leitura parcial não pode estabelecer
+
+A prova de conceito parcial foi prometida para o segundo semestre de 2026; a completa, para o
+início de 2027<Cit id="fase1,q2-2026" />.
+
+Leituras parciais em fase 2a carregam vulnerabilidades específicas que valem enumerar
+antecipadamente, para que a avaliação não seja feita depois sob o efeito da manchete:
+
+1. **Momento escolhido.** Sem um tempo de análise pré-especificado e publicado, o instante do
+   corte é uma variável livre. Ciclo capilar tem dinâmica lenta e não monotônica.
+2. **Subconjunto de coortes.** "Interim" pode significar a coorte de dose que respondeu melhor.
+   Sem as outras, não há relação dose-resposta — e relação dose-resposta é o principal argumento
+   de causalidade disponível em fase 2a.
+3. **Multiplicidade.** Quatro desfechos capilares × três doses × múltiplos tempos é um espaço de
+   comparações grande. Sem hierarquia de testes declarada, um p < 0,05 isolado é fraco.
+4. **n por braço.** Coortes de MAD tipicamente têm 8–12 participantes ativos. A variabilidade de
+   TAHC entre indivíduos é alta; intervalos de confiança serão largos.
+
+O padrão mínimo para considerar a prova de conceito atingida: diferença sobre **placebo**, com
+gradiente de dose coerente, em TAHC e em pelo menos um desfecho de qualidade de fio (TAHW/TAHD),
+com n e intervalos publicados.
+
+<Figura legenda="Estado do programa por nível de realismo biológico do modelo.">
+  <EscadaEvidencia />
+</Figura>
+
+## Contexto comercial e o que a Lilly sinaliza
+
+Oferta de US$ 100 milhões precificada em 24 de junho de 2026 — 13.495.277 ações a US$ 7,41 — com
+US$ 40 milhões da Eli Lilly, sem direitos sobre o programa<Cit id="oferta" />. Caixa suficiente
+até o segundo semestre de 2028<Cit id="q2-2026" />.
+
+O detalhe mais informativo não é o valor: é que o representante da Lilly ingressou no **conselho
+consultivo de endometriose** da Absci, não em algo ligado a alopecia<Cit id="q2-2026" />. O PRLR
+é alvo nas duas indicações, e endometriose é um mercado de fármaco com reembolso e endpoints
+regulatórios consolidados, ao contrário de alopecia. É razoável ler a participação da Lilly como
+interesse primário na segunda indicação, com a alopecia servindo de caminho rápido e barato para
+gerar dado clínico de segurança e PD na classe.
+
+Para quem avalia o ativo, isso inverte a hierarquia habitual: a manchete é capilar, a tese de
+valor pode ser ginecológica.
+
+## Síntese
+
+O ABS-201 tem o racional mecanístico mais interessante em alopecia androgenética hoje, e o
+conjunto ex vivo — particularmente a preservação do compartimento K15⁺ — sustenta uma hipótese
+que vai além do que minoxidil e finasterida fazem.
+
+Contra isso: toda a base pública é corporativa e não revisada; a meia-vida que ancora a proposta
+de valor foi estimada a partir de janela de observação menor que ela própria; a PK vem de uma via
+de administração que não será a comercial; não há biomarcador farmacodinâmico humano publicado; a
+segurança reportada é cega e agrupada em 32 voluntários com exposição única; e o comparador de
+classe, que valida o mecanismo, entregou um efeito que não supera o padrão de cuidado existente
+quando as bases de comparação são equalizadas. Esse último ponto pede cautela, porque o regime
+do HMI-115 provavelmente não cobria o receptor por inteiro e o número dele serve mal como teto da
+classe.
+
+Nada disso é incomum para um ativo nesta fase. O que seria impróprio é tratar o comunicado de
+junho como evidência de eficácia — ele é, com precisão, evidência de que o programa merece
+continuar.
+
+A leitura de prova de conceito resolve a questão nos próximos meses. Até ela, a posição defensável
+é: mecanismo validado por terceiro, molécula não validada, posologia potencialmente diferenciadora
+e um número de farmacocinética que precisa ser confirmado antes de ser usado como argumento.
