@@ -1,0 +1,373 @@
+@import 'tailwindcss';
+
+/* Dark mode is driven by a data attribute so the toggle can force a choice
+   while still honouring the OS preference by default. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme {
+  --font-serif:
+    Charter, 'Bitstream Charter', 'Sitka Text', Cambria, Georgia, 'Times New Roman', serif;
+  --font-sans:
+    ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* Paper */
+  --color-paper: oklch(0.987 0.004 85);
+  --color-paper-raised: oklch(0.965 0.007 82);
+  --color-paper-sunken: oklch(0.943 0.009 80);
+
+  /* Ink */
+  --color-ink: oklch(0.24 0.012 60);
+  --color-ink-muted: oklch(0.49 0.011 60);
+  --color-ink-faint: oklch(0.63 0.009 60);
+
+  /* Rules & structure */
+  --color-rule: oklch(0.875 0.008 70);
+  --color-rule-strong: oklch(0.72 0.01 65);
+
+  /* Editorial accent (oxblood) */
+  --color-accent: oklch(0.44 0.135 22);
+  --color-accent-soft: oklch(0.93 0.03 30);
+
+  /* Reading levels */
+  --color-leigo: oklch(0.52 0.12 58);
+  --color-leigo-soft: oklch(0.945 0.035 70);
+  --color-intermediario: oklch(0.47 0.098 205);
+  --color-intermediario-soft: oklch(0.945 0.028 210);
+  --color-especialista: oklch(0.42 0.14 18);
+  --color-especialista-soft: oklch(0.94 0.032 22);
+
+  --text-measure: 68ch;
+}
+
+[data-theme='dark'] {
+  --color-paper: oklch(0.175 0.008 70);
+  --color-paper-raised: oklch(0.215 0.009 70);
+  --color-paper-sunken: oklch(0.145 0.008 70);
+
+  --color-ink: oklch(0.93 0.008 80);
+  --color-ink-muted: oklch(0.72 0.009 80);
+  --color-ink-faint: oklch(0.56 0.009 80);
+
+  --color-rule: oklch(0.32 0.009 70);
+  --color-rule-strong: oklch(0.45 0.011 70);
+
+  --color-accent: oklch(0.72 0.12 28);
+  --color-accent-soft: oklch(0.28 0.05 26);
+
+  --color-leigo: oklch(0.78 0.11 72);
+  --color-leigo-soft: oklch(0.27 0.045 70);
+  --color-intermediario: oklch(0.75 0.09 205);
+  --color-intermediario-soft: oklch(0.25 0.04 208);
+  --color-especialista: oklch(0.74 0.12 22);
+  --color-especialista-soft: oklch(0.27 0.05 22);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-paper: oklch(0.175 0.008 70);
+    --color-paper-raised: oklch(0.215 0.009 70);
+    --color-paper-sunken: oklch(0.145 0.008 70);
+
+    --color-ink: oklch(0.93 0.008 80);
+    --color-ink-muted: oklch(0.72 0.009 80);
+    --color-ink-faint: oklch(0.56 0.009 80);
+
+    --color-rule: oklch(0.32 0.009 70);
+    --color-rule-strong: oklch(0.45 0.011 70);
+
+    --color-accent: oklch(0.72 0.12 28);
+    --color-accent-soft: oklch(0.28 0.05 26);
+
+    --color-leigo: oklch(0.78 0.11 72);
+    --color-leigo-soft: oklch(0.27 0.045 70);
+    --color-intermediario: oklch(0.75 0.09 205);
+    --color-intermediario-soft: oklch(0.25 0.04 208);
+    --color-especialista: oklch(0.74 0.12 22);
+    --color-especialista-soft: oklch(0.27 0.05 22);
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: light dark;
+    scroll-behavior: smooth;
+    /* The sticky masthead would otherwise eat anchor targets. */
+    scroll-padding-top: 5.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-soft);
+  }
+}
+
+/* Everything editorial lives in the components layer so Tailwind utility
+   classes (which sit in a later layer) can still override it inline —
+   unlayered rules would silently beat every utility on the page. */
+@layer components {
+  /* ---------------------------------------------------------------- *
+   * Editorial primitives
+   * ---------------------------------------------------------------- */
+
+  /* Letterspaced small-caps label used for every piece of metadata. */
+  .label {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  /* The double rule under the masthead — the most recognisable journal tell. */
+  .rule-double {
+    border-top: 3px solid var(--color-ink);
+    border-bottom: 1px solid var(--color-ink);
+    height: 4px;
+  }
+
+  .measure {
+    max-width: var(--text-measure);
+  }
+
+  /* ---------------------------------------------------------------- *
+   * Article body
+   * ---------------------------------------------------------------- */
+
+  .prose-journal {
+    counter-reset: section figure table;
+    font-size: 1.0625rem;
+    line-height: 1.72;
+    hyphens: auto;
+  }
+
+  .prose-journal > * + * {
+    margin-block-start: 1.15em;
+  }
+
+  /* Body rules apply to MDX's own direct children only. Figures, boxes and other
+     components bring their own typography, and must not inherit justified serif
+     body text or numbered headings just by sitting inside the article. */
+  .prose-journal > p {
+    text-align: justify;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 40rem) {
+    .prose-journal > p {
+      /* Justification on a narrow measure produces rivers of whitespace. */
+      text-align: left;
+    }
+  }
+
+  .prose-journal > h2 {
+    counter-increment: section;
+    counter-reset: subsection;
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-block: 2.4em 0.75em;
+    padding-block-end: 0.3em;
+    border-block-end: 1px solid var(--color-rule);
+    scroll-margin-top: 6rem;
+  }
+
+  .prose-journal > h2::before {
+    content: counter(section) '. ';
+    color: var(--color-ink-faint);
+    font-family: var(--font-sans);
+    font-size: 0.85em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .prose-journal > h3 {
+    counter-increment: subsection;
+    font-size: 1.075rem;
+    font-weight: 600;
+    margin-block: 1.9em 0.5em;
+    scroll-margin-top: 6rem;
+  }
+
+  .prose-journal > h3::before {
+    content: counter(section) '.' counter(subsection) ' ';
+    color: var(--color-ink-faint);
+    font-family: var(--font-sans);
+    font-size: 0.85em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .prose-journal > h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    font-style: italic;
+    margin-block: 1.5em 0.35em;
+  }
+
+  .prose-journal a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+
+  .prose-journal a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  .prose-journal strong {
+    font-weight: 650;
+  }
+
+  .prose-journal > ul,
+  .prose-journal > ol {
+    padding-inline-start: 1.5em;
+  }
+
+  .prose-journal > ul {
+    list-style: square;
+  }
+
+  .prose-journal > ol {
+    list-style: decimal;
+  }
+
+  .prose-journal > ul > li + li,
+  .prose-journal > ol > li + li {
+    margin-block-start: 0.4em;
+  }
+
+  .prose-journal > ul > li::marker,
+  .prose-journal > ol > li::marker {
+    color: var(--color-ink-faint);
+  }
+
+  .prose-journal > blockquote {
+    border-inline-start: 2px solid var(--color-rule-strong);
+    padding-inline-start: 1.25em;
+    font-style: italic;
+    color: var(--color-ink-muted);
+  }
+
+  .prose-journal code {
+    font-family: var(--font-mono);
+    font-size: 0.855em;
+    background-color: var(--color-paper-sunken);
+    border: 1px solid var(--color-rule);
+    border-radius: 0.1875rem;
+    padding: 0.1em 0.32em;
+    hyphens: none;
+  }
+
+  .prose-journal pre {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    background-color: var(--color-paper-sunken);
+    border: 1px solid var(--color-rule);
+    border-radius: 0.25rem;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+
+  .prose-journal pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .prose-journal > hr {
+    border: 0;
+    border-block-start: 1px solid var(--color-rule);
+    margin-block: 2.5em;
+  }
+
+  .prose-journal table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .prose-journal thead th {
+    border-block: 1px solid var(--color-ink);
+    padding: 0.5rem 0.6rem;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .prose-journal tbody td {
+    border-block-end: 1px solid var(--color-rule);
+    padding: 0.5rem 0.6rem;
+    vertical-align: top;
+  }
+
+  .prose-journal tbody tr:last-child td {
+    border-block-end: 1px solid var(--color-ink);
+  }
+
+  /* Opening flourish, used only on the plain-language level. */
+  .dropcap > p:first-of-type::first-letter {
+    float: inline-start;
+    font-size: 3.4em;
+    line-height: 0.82;
+    padding-inline-end: 0.08em;
+    padding-block-start: 0.06em;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+}
+
+/* ---------------------------------------------------------------- *
+ * View Transitions — level swaps cross-fade instead of snapping.
+ * ---------------------------------------------------------------- */
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(article-body) {
+  animation: fade-out 140ms ease both;
+}
+
+::view-transition-new(article-body) {
+  animation: fade-in 220ms ease both;
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(article-body),
+  ::view-transition-new(article-body) {
+    animation: none;
+  }
+}

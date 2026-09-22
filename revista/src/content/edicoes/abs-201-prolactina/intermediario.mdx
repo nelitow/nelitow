@@ -1,0 +1,256 @@
+import { Figura } from '@/components/journal/Figura'
+import { Caixa } from '@/components/journal/Caixa'
+import { DiagramaMecanismo } from '@/components/figuras/DiagramaMecanismo'
+import { EscadaEvidencia } from '@/components/figuras/EscadaEvidencia'
+import { CurvaPK } from '@/components/figuras/CurvaPK'
+import { BarrasComparador } from '@/components/figuras/BarrasComparador'
+
+A alopecia androgenética é, do ponto de vista terapêutico, um problema estranhamente parado. Os
+dois fármacos que dominam o tratamento — minoxidil e finasterida — têm 30 e 25 anos de mercado,
+respectivamente. Tudo que surgiu depois foi reformulação, mudança de via de administração ou
+combinação. O alvo molecular continuou o mesmo: a via androgênica.
+
+O ABS-201 é a primeira tentativa em fase clínica avançada de sair dessa via por completo. É um
+anticorpo monoclonal contra o **receptor de prolactina (PRLR)**, desenhado pela plataforma de IA
+generativa da Absci<Cit id="caso-absci" />. Em 24 de junho de 2026 a empresa divulgou dados
+intermediários de Fase 1<Cit id="fase1" />. Esta edição separa o que esses dados sustentam do que
+não sustentam.
+
+## Por que a prolactina
+
+A prolactina é tratada nos livros-texto como hormônio da lactação, mas sua função é
+consideravelmente mais ampla e boa parte dela acontece fora da hipófise. O folículo piloso humano
+expressa PRLR e produz prolactina localmente — ou seja, existe um eixo prolactinérgico
+intrafolicular, independente do nível sérico.
+
+O papel dela no ciclo do pelo é o de **indutora de catágeno**. Sinalização via PRLR empurra o
+folículo para fora da fase anágena. Isso não é patológico por si só: o ciclo precisa de um sinal
+de término. A hipótese terapêutica é que, no couro cabeludo androgeneticamente comprometido, esse
+sinal está desregulado para cima, contribuindo para o encurtamento progressivo do anágeno que
+define a miniaturização.
+
+<Figura
+  legenda={
+    <>
+      As duas vias convergem no mesmo desfecho — encurtamento do anágeno e miniaturização — por
+      mecanismos moleculares distintos. É essa separação que sustenta a hipótese de efeito aditivo
+      entre um anti-PRLR e um inibidor de 5α-redutase.
+    </>
+  }
+>
+  <DiagramaMecanismo />
+</Figura>
+
+A consequência prática dessa separação é o argumento comercial inteiro do programa. Um
+anti-PRLR não competiria com a finasterida: somaria a ela. E atenderia dois públicos que a via
+androgênica atende mal — mulheres com padrão feminino de rarefação e homens que interrompem o
+inibidor de 5α-redutase por efeitos adversos sexuais, reais ou temidos.
+
+## O que o pré-clínico mostrou
+
+Dois conjuntos de dados sustentam o programa.
+
+Em **modelo murino**, o ABS-201 produziu recrescimento estatisticamente superior ao do
+minoxidil<Cit id="caso-absci" />. Esse é o dado mais citado nas manchetes e o menos informativo:
+modelos de pelagem em camundongo têm histórico ruim de tradução para alopecia androgenética
+humana, que é uma condição que o camundongo simplesmente não tem.
+
+O conjunto relevante é o segundo. Em dezembro de 2025 a Absci divulgou dados em **couro cabeludo
+humano cultivado ex vivo**, de doadores masculinos<Cit id="exvivo" />. Nesse modelo o anticorpo:
+
+- inibiu a fosforilação de STAT5, confirmando que o bloqueio do receptor efetivamente interrompe a
+  cascata de sinalização a jusante;
+- prolongou o anágeno e bloqueou a entrada em catágeno induzida por prolactina;
+- reduziu a apoptose de células-tronco K15⁺ do bulge e aumentou sua capacidade de gerar
+  progênie CD34⁺;
+- elevou a produção folicular de IGF-1 e FGF7 e a proliferação de queratinócitos da matriz.
+
+<Caixa tipo="nota" titulo="Por que o dado das células-tronco é o mais interessante">
+
+Prolongar anágeno é o que minoxidil já faz. Proteger o compartimento de células-tronco do bulge é
+outra categoria de efeito: é a diferença entre manter um folículo funcionando por mais tempo e
+recuperar a capacidade de um folículo já miniaturizado de voltar a produzir fio terminal.
+
+É daí que vem a alegação de "reverter a miniaturização" no material da empresa. A alegação é
+plausível à luz desses marcadores. Ela não está demonstrada em pessoas.
+
+</Caixa>
+
+Vale registrar a limitação do modelo ex vivo: fragmentos de couro cabeludo em cultura sobrevivem
+poucos dias, tempo insuficiente para observar um ciclo completo. O que se mede são marcadores
+intermediários, não fio nascido.
+
+## O ensaio HEADLINE
+
+O estudo registrado como NCT07317544 é um Fase 1/2a randomizado, duplo-cego e controlado por
+placebo, com duas porções<Cit id="headline-registro,primeiros-dosados" />. Os primeiros
+participantes foram dosados em dezembro de 2025.
+
+**Porção SAD (dose única ascendente).** Quatro coortes, 32 adultos saudáveis no total, com doses
+intravenosas de 150, 450, 900 e 1800 mg. Objetivo: segurança, tolerabilidade e farmacocinética.
+Participantes saudáveis, sem exigência de alopecia.
+
+**Porção MAD (doses múltiplas ascendentes).** Três a quatro grupos de dose **subcutânea** — 300,
+600 e 1200 mg, ou placebo — agora em participantes **com** alopecia androgenética. É esta porção
+que carrega os desfechos capilares: contagem de fios na área-alvo (TAHC), espessura (TAHW),
+pigmentação (TAHD) e desfechos relatados por paciente e investigador.
+
+<Caixa tipo="alerta" titulo="A mudança de via que quase ninguém comentou">
+
+A SAD foi intravenosa. A MAD é subcutânea. São vias com biodisponibilidade e perfil de absorção
+diferentes, e a meia-vida de 65 dias foi estimada a partir da via IV.
+
+Isso não invalida a estimativa — a meia-vida terminal de um IgG é dominada pela reciclagem via
+FcRn e tende a se conservar entre vias —, mas significa que o intervalo posológico anunciado
+ainda depende de confirmação na via que efetivamente será comercializada. A própria empresa
+qualifica a projeção como pendente de confirmação.
+
+</Caixa>
+
+## Os dados de Fase 1, lidos com precisão
+
+O que foi divulgado em junho<Cit id="fase1,ddw" />:
+
+- **Segurança:** nenhum evento adverso sério nas quatro coortes SAD; eventos adversos emergentes
+  do tratamento majoritariamente leves, com cefaleia transitória como o mais frequente.
+- **Imunogenicidade:** perfil descrito como favorável.
+- **Farmacocinética:** meia-vida estimada em **pelo menos 65 dias**, com base em dados até o dia
+  56 de seguimento nas coortes de dose mais baixa.
+
+Duas ressalvas de leitura importam aqui.
+
+A primeira é que os dados de segurança foram descritos como **cegos**. Em um SAD cego, os eventos
+relatados agrupam quem recebeu droga e quem recebeu placebo. "Nenhum evento adverso sério" é uma
+informação real e boa, mas é uma informação sobre o conjunto, não sobre o braço ativo isolado.
+
+A segunda é que 32 voluntários saudáveis não permitem detectar eventos raros. O que um SAD desse
+tamanho exclui é toxicidade aguda evidente — o que é exatamente o que ele deveria excluir, e é
+suficiente para justificar seguir adiante.
+
+## A meia-vida é o dado com valor real
+
+Tirando segurança, o resultado de Fase 1 com maior valor prático é farmacocinético.
+
+<Figura
+  legenda={
+    <>
+      Curva de acúmulo para um esquema de três doses em seis meses, assumindo decaimento
+      monoexponencial com meia-vida de 65 dias. O vale imediatamente antes de cada nova dose sobe
+      de 41% do primeiro pico (dia 84) para 57% (dia 168) e 64% (dia 252): a droga se acumula e a
+      exposição não colapsa entre aplicações.
+    </>
+  }
+  fonte="modelo ilustrativo construído a partir da meia-vida divulgada; não são dados medidos de concentração."
+>
+  <CurvaPK />
+</Figura>
+
+Uma meia-vida dessa ordem coloca o ABS-201 na faixa de administração trimestral. A empresa projeta
+duas a três aplicações por semestre.
+
+Isso ataca um problema que não é farmacológico, é comportamental. Adesão a tratamento diário de
+alopecia é notoriamente ruim, e a perda de benefício após interrupção é rápida — o cabelo ganhado
+com finasterida ou minoxidil se perde em meses quando o paciente para. Um esquema de três
+aplicações anuais, feitas em consultório, transforma adesão de problema crônico em não-problema.
+
+É razoável argumentar que, num cenário de eficácia apenas equivalente à da finasterida, o ABS-201
+ainda teria mercado só pela posologia.
+
+## O comparador de classe
+
+O ABS-201 não é o primeiro anti-PRLR a chegar em pacientes. O HMI-115, originado na Bayer
+(BAY-1158061) e licenciado para a Hope Medicine em 2019, já passou por Fase 1b em homens com
+alopecia androgenética e está em Fase 2<Cit id="hopemed,hmi115-registro" />.
+
+O resultado da Fase 1b: aumento médio de 14 fios não-velo por cm² em relação ao
+basal<Cit id="revisao-anticorpos" />.
+
+<Figura
+  legenda={
+    <>
+      Ganho de contagem capilar relatado para os tratamentos de referência e para o comparador de
+      classe do ABS-201. As barras <strong>não</strong> são comparáveis entre si — leia as bases
+      indicadas ao lado de cada valor.
+    </>
+  }
+  fonte={
+    <>
+      finasterida: ensaio de 48 semanas, ganho líquido sobre placebo; minoxidil 5% e HMI-115:
+      variação sobre o basal<Cit id="revisao-anticorpos" />.
+    </>
+  }
+>
+  <BarrasComparador />
+</Figura>
+
+A leitura honesta dessa figura tem duas partes.
+
+A parte boa: **o mecanismo funciona em humanos.** Bloquear PRLR produz fio em gente com calvície.
+Isso reduz substancialmente o risco biológico do ABS-201 — ele não está apostando numa via
+especulativa, está apostando em ser uma molécula melhor numa via já validada.
+
+A parte desconfortável: 14 fios/cm² sobre o basal não é um salto em relação ao que já existe. E
+ganhos medidos contra o basal são sistematicamente mais generosos que ganhos medidos contra
+placebo, porque incorporam efeito placebo, regressão à média e variação sazonal do ciclo capilar.
+O número da finasterida na figura, por ser líquido sobre placebo, é o mais conservador dos três e
+provavelmente o mais comparável à realidade.
+
+## Onde o ABS-201 precisaria ser diferente
+
+Se o teto da classe fosse mesmo ~14 fios/cm², o ABS-201 seria um remédio a mais, com posologia
+melhor. A tese da Absci é que o teto é mais alto para a molécula dela, e ela apoia isso em dois
+argumentos:
+
+1. **Propriedades de engenharia.** O anticorpo foi desenhado por IA com otimização simultânea de
+   afinidade, especificidade e propriedades de desenvolvimento — a alegação é de um bloqueio mais
+   completo e mais duradouro do receptor.
+2. **Efeito sobre o nicho de células-tronco.** Os dados ex vivo sugerem que o ABS-201 não apenas
+   prolonga anágeno, mas protege o compartimento K15⁺. Se isso se traduzir, o desfecho não seria
+   só mais fios, seriam fios mais grossos — o que aparece em TAHW e TAHD, não em TAHC.
+
+Este segundo ponto merece atenção na hora de ler o resultado. Se o ABS-201 entregar TAHC
+comparável ao HMI-115 mas TAHW e TAHD claramente superiores, isso é um sinal mecanisticamente
+coerente e clinicamente relevante — espessura e pigmentação são o que o paciente enxerga no
+espelho, mais do que contagem.
+
+<Figura
+  legenda="A escada de evidência do programa. Três degraus cumpridos, nenhum deles capaz de responder à pergunta de eficácia."
+>
+  <EscadaEvidencia />
+</Figura>
+
+## O financiamento
+
+No mesmo 24 de junho, a Absci precificou uma oferta de US$ 100 milhões: 13.495.277 ações a US$
+7,41, com US$ 40 milhões vindos da Eli Lilly<Cit id="oferta" />. O caixa passou a cobrir operações
+até o segundo semestre de 2028<Cit id="q2-2026" />.
+
+Dois detalhes importam para calibrar o significado disso.
+
+O investimento da Lilly é **puramente acionário e não confere direitos sobre o programa**. Não é
+licenciamento, não é co-desenvolvimento, não há marcos nem royalties descritos. Um representante
+da Lilly entrou no conselho consultivo de endometriose da Absci — o que, aliás, sinaliza que o
+interesse da Lilly pode estar mais na segunda indicação do PRLR do que na calvície.
+
+E o momento: a oferta foi precificada no mesmo dia da divulgação dos dados positivos. É a prática
+padrão do setor, e não há nada de impróprio nisso, mas é um lembrete de que o comunicado de junho
+era simultaneamente um documento científico e um instrumento de captação.
+
+## O que observar no readout
+
+A leitura parcial de prova de conceito foi prometida para o segundo semestre de 2026 — portanto
+iminente — e a completa para o início de 2027<Cit id="fase1,q2-2026" />.
+
+Quatro coisas a checar quando sair:
+
+1. **A base de comparação.** Delta contra placebo ou contra basal? Se a empresa divulgar apenas
+   variação sobre o basal, o número não é comparável ao da finasterida e deve ser descontado.
+2. **O tamanho da amostra por braço.** Coortes de MAD são pequenas. Um intervalo de confiança
+   largo em torno de uma média bonita não é prova de conceito.
+3. **TAHW e TAHD, não só TAHC.** É onde a tese mecanística do programa se distingue do comparador.
+4. **Quanto tempo de seguimento.** Ciclo capilar é lento; ganhos medidos cedo demais subestimam, e
+   leituras parciais tendem a ser feitas no ponto mais favorável disponível.
+
+Até lá, o estado da questão é: mecanismo plausível, validado em humanos por um concorrente com
+efeito modesto, com segurança inicial boa e posologia potencialmente transformadora — e zero dado
+de eficácia próprio.
