@@ -1,21 +1,31 @@
 'use server'
 
 import { isNivel, type Nivel } from '@/content/types'
+import { CALIBRAGEM_VAZIA, ehResposta, type Calibragem, type Resposta } from '@/lib/calibragem'
 import type { EstadoInscricao } from '@/lib/inscricao'
-import {
-  CALIBRAGEM_VAZIA,
-  RESPOSTAS,
-  registrarInscrito,
-  somarCalibragem,
-  type Calibragem,
-  type Resposta,
-} from '@/lib/store'
+import { lerCalibragem, registrarInscrito, somarCalibragem } from '@/lib/store'
+
+// Um slug nunca é livre: é sempre um nome de pasta que nós criamos.
+const SLUG = /^[a-z0-9-]{1,80}$/
 
 /**
- * Records whether a reading level landed at the depth it claims.
+ * Lê as contagens de um nível.
  *
- * Every argument is re-validated here: a Server Action is a public HTTP
- * endpoint, and the client component that calls it is not a trust boundary.
+ * Existe como ação — e não como leitura na página — para que as páginas de
+ * nível continuem estáticas. Se a contagem fosse lida na renderização, cada
+ * uma das três URLs por edição viraria uma página com revalidação, só para
+ * exibir um número que o leitor nem vê antes de votar.
+ */
+export async function lerCalibragemAction(slug: string, nivel: string): Promise<Calibragem> {
+  if (!SLUG.test(slug.trim()) || !isNivel(nivel)) return CALIBRAGEM_VAZIA
+  return lerCalibragem(slug.trim(), nivel as Nivel)
+}
+
+/**
+ * Registra se um nível de leitura acertou a profundidade que anuncia.
+ *
+ * Todo argumento é revalidado aqui: uma Server Action é um endpoint HTTP
+ * público, e o componente cliente que a chama não é fronteira de confiança.
  */
 export async function registrarCalibragem(
   slug: string,
@@ -24,15 +34,15 @@ export async function registrarCalibragem(
 ): Promise<Calibragem> {
   const slugLimpo = slug.trim()
 
-  if (!/^[a-z0-9-]{1,80}$/.test(slugLimpo)) return CALIBRAGEM_VAZIA
+  if (!SLUG.test(slugLimpo)) return CALIBRAGEM_VAZIA
   if (!isNivel(nivel)) return CALIBRAGEM_VAZIA
-  if (!(RESPOSTAS as readonly string[]).includes(resposta)) return CALIBRAGEM_VAZIA
+  if (!ehResposta(resposta)) return CALIBRAGEM_VAZIA
 
   return somarCalibragem(slugLimpo, nivel as Nivel, resposta as Resposta)
 }
 
-// Deliberately conservative: rejects the obvious mistakes without pretending
-// to validate deliverability, which only a confirmation e-mail can do.
+// Deliberadamente conservador: rejeita o erro óbvio sem fingir que valida
+// entregabilidade, o que só um e-mail de confirmação resolve.
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
 export async function inscrever(
@@ -49,7 +59,18 @@ export async function inscrever(
     return { status: 'erro', mensagem: 'Esse e-mail não parece válido.', email }
   }
 
-  await registrarInscrito(email)
+  // Se a gravação falhou, o leitor precisa saber. A versão anterior gravava
+  // num arquivo efêmero e sempre respondia "pronto", inclusive quando o
+  // e-mail tinha acabado de ser perdido.
+  const gravado = await registrarInscrito(email)
+
+  if (!gravado) {
+    return {
+      status: 'erro',
+      mensagem: 'Não conseguimos registrar agora. Tente de novo em alguns minutos.',
+      email,
+    }
+  }
 
   return {
     status: 'ok',

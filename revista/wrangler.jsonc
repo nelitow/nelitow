@@ -1,0 +1,31 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ensaio-aberto",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-09-22",
+
+  // `nodejs_compat` é obrigatório: o adapter roda o Next no runtime Node do
+  // Workers, e não no runtime edge reduzido.
+  "compatibility_flags": ["nodejs_compat"],
+
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+
+  "observability": {
+    "enabled": true
+  },
+
+  // O banco guarda os votos de calibragem e a lista de inscritos.
+  // O `database_id` sai de `npx wrangler d1 create ensaio-aberto` — preencha
+  // antes do primeiro deploy. O nome do binding, DB, é o que `src/lib/store.ts`
+  // procura; mudá-lo quebra a gravação em silêncio.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ensaio-aberto",
+      "database_id": "PREENCHER_APOS_wrangler_d1_create"
+    }
+  ]
+}

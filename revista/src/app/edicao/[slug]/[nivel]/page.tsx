@@ -16,16 +16,15 @@ import { buscarEdicao, listarTodas, relacionadas, vizinhas } from '@/content/reg
 import { NIVEIS, NIVEL_INFO, isNivel, type Nivel } from '@/content/types'
 import { identificador } from '@/lib/format'
 import { grafoArtigo } from '@/lib/schema'
-import { lerCalibragem } from '@/lib/store'
 import { urlAbsoluta } from '@/lib/site'
 
 interface Props {
   params: Promise<{ slug: string; nivel: string }>
 }
 
-// Refresh the calibration tallies periodically without making the whole
-// article dynamic — the body itself never changes between requests.
-export const revalidate = 3600
+// Sem revalidação: o corpo do artigo nunca muda entre requisições, e as
+// contagens de calibragem são buscadas pelo cliente. As três páginas de nível
+// são estáticas de verdade.
 
 export function generateStaticParams() {
   return listarTodas().flatMap((edicao) =>
@@ -76,7 +75,6 @@ export default async function PaginaNivel({ params }: Props) {
 
   const Corpo = (await edicao.niveis[nivelTipado]()).default
   const Cit = criarCit(referencias)
-  const contagens = await lerCalibragem(slug, nivelTipado)
   const { anterior, proxima } = vizinhas(slug)
 
   const idEdicao = identificador(meta.volume, meta.numero, meta.slug)
@@ -155,7 +153,7 @@ export default async function PaginaNivel({ params }: Props) {
               </p>
             </div>
 
-            <Calibragem slug={slug} nivel={nivelTipado} iniciais={contagens} />
+            <Calibragem slug={slug} nivel={nivelTipado} />
 
             <Relacionadas edicoes={relatadas} />
 

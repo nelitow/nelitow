@@ -30,7 +30,8 @@ npm run verificar  # validar + typecheck
 ```
 
 Defina `NEXT_PUBLIC_SITE_URL` no ambiente de deploy (usado em canonical, RSS, sitemap e Open
-Graph). Sem ela o site assume `http://localhost:3000`.
+Graph). Sem ela o site assume `http://localhost:3000`. Para publicar, veja
+[Deploy](#deploy-cloudflare-workers).
 
 ## Publicando uma edição por dia
 
@@ -71,6 +72,63 @@ A meia-vida foi estimada em 65 dias<Cit id="fase1" />.
 ```
 
 Tipos de caixa: `nota`, `alerta`, `definicao`, `metodo`.
+
+## Deploy (Cloudflare Workers)
+
+O site roda em Cloudflare Workers pelo adapter [OpenNext](https://opennext.js.org/cloudflare),
+com **D1** guardando os votos de calibragem e a lista de inscritos.
+
+### Primeira vez
+
+```bash
+npx wrangler login
+npx wrangler d1 create ensaio-aberto        # copie o database_id para wrangler.jsonc
+npm run cf:db:remoto                        # aplica schema.sql no banco de produção
+NEXT_PUBLIC_SITE_URL=https://seu-dominio npm run cf:deploy
+```
+
+`NEXT_PUBLIC_SITE_URL` precisa estar no ambiente **do build**, não em `vars` do
+wrangler: variáveis `NEXT_PUBLIC_*` são embutidas no bundle na compilação.
+
+### Dia a dia
+
+```bash
+npm run cf:db:local    # schema no D1 local (uma vez)
+npm run dev            # Next com os bindings do wrangler.jsonc
+npm run cf:preview     # o Worker de verdade, em localhost:8787
+npm run cf:deploy      # publica
+```
+
+### Três decisões que valem registro
+
+**O build para a Cloudflare usa webpack, não Turbopack.** O adapter ainda não
+lida com o bundle de middleware que o Turbopack produz — o `opennextjs-cloudflare
+build` falha. `npm run build` (Turbopack) segue valendo para desenvolvimento; o
+`cf:build` passa `--webpack`. Verificado que os dois plugins MDX (`remark-gfm` e
+`rehype-slug`) aplicam igual nos dois caminhos: os `id` dos títulos e as tabelas
+saem corretos.
+
+**Nenhuma rota usa ISR, de propósito.** As contagens de calibragem eram lidas
+durante o SSG, o que obrigava as três páginas de nível a ter `revalidate` — e no
+Workers exigiria um bucket R2 para o cache incremental. Como o leitor só vê os
+números depois de votar, a leitura passou para uma Server Action disparada no
+cliente, e só quando a seção chega perto da tela. As páginas voltaram a ser
+estáticas e o R2 deixou de ser necessário.
+
+**O armazenamento saiu do disco.** A versão anterior gravava JSON em `.data/`.
+Isso não era um detalhe de plataforma: o Workers não tem filesystem, mas o
+container do Railway também perde o disco a cada deploy. O `try/catch` que
+envolvia a escrita fazia e-mail de inscrito sumir **em silêncio**. Agora a
+inscrição devolve sucesso ou falha, e o leitor é avisado quando não deu certo.
+O incremento de voto virou um `UPDATE total = total + 1` atômico, o que também
+eliminou a fila com mutex que existia antes.
+
+### Verificado no Worker local
+
+Todas as rotas em 200, imagens `next/og` geradas no workerd (PNG, ~46 KB),
+voto de calibragem e inscrição gravando no D1 (conferido com
+`wrangler d1 execute --command="SELECT …"`), validação de e-mail rejeitando
+entrada inválida, e nenhum erro de console.
 
 ## Normas de redação (e o validador)
 

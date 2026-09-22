@@ -1,70 +1,75 @@
 import 'server-only'
 
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
+import { getCloudflareContext } from '@opennextjs/cloudflare'
 import type { Nivel } from '@/content/types'
-
-export const RESPOSTAS = ['basico', 'certo', 'tecnico'] as const
-export type Resposta = (typeof RESPOSTAS)[number]
-
-export type Calibragem = Record<Resposta, number>
-
-export const CALIBRAGEM_VAZIA: Calibragem = { basico: 0, certo: 0, tecnico: 0 }
-
-type Banco = Record<string, Calibragem>
-
-const ARQUIVO = join(process.cwd(), '.data', 'calibragem.json')
+import { CALIBRAGEM_VAZIA, RESPOSTAS, type Calibragem, type Resposta } from '@/lib/calibragem'
 
 /**
- * Durability note
- * ---------------
- * This is a JSON file on local disk. It survives restarts on a normal Node
- * host and is wiped on every cold start of a serverless deployment.
+ * Armazenamento em D1 (SQLite da Cloudflare).
  *
- * That is a deliberate trade for a publication that has no database yet: the
- * signal is directional ("is level II landing as level II?"), not an audited
- * count. Swap the two functions below for a real store when it matters —
- * nothing else in the app touches the filesystem.
+ * Substituiu um arquivo JSON em disco. O motivo não foi a plataforma: o
+ * Workers não tem filesystem, mas o container do Railway também perde o disco
+ * a cada deploy. Gravar e-mail de inscrito num arquivo efêmero perdia dado em
+ * silêncio em qualquer host — o `try/catch` que engolia o erro fazia a falha
+ * ser invisível.
+ *
+ * Duas propriedades que o arquivo não tinha:
+ *
+ * - A contagem de voto é um `UPDATE total = total + 1` atômico, em vez de
+ *   ler-modificar-escrever. A fila com mutex que existia antes só protegia
+ *   contra corrida dentro de um processo; aqui não há corrida nenhuma.
+ * - A inscrição usa `ON CONFLICT DO NOTHING`, então e-mail repetido não
+ *   duplica nem precisa de leitura prévia.
  */
 
-let cache: Banco | null = null
-
-/** Serialises read-modify-write so two concurrent votes cannot clobber. */
-let fila: Promise<unknown> = Promise.resolve()
-
-function enfileirar<T>(tarefa: () => Promise<T>): Promise<T> {
-  const resultado = fila.then(tarefa, tarefa)
-  fila = resultado.catch(() => {})
-  return resultado
-}
-
-async function ler(): Promise<Banco> {
-  if (cache) return cache
-  try {
-    cache = JSON.parse(await readFile(ARQUIVO, 'utf8')) as Banco
-  } catch {
-    // Missing or unreadable file simply means "nothing recorded yet".
-    cache = {}
-  }
-  return cache
-}
-
-async function gravar(banco: Banco): Promise<void> {
-  cache = banco
-  try {
-    await mkdir(dirname(ARQUIVO), { recursive: true })
-    await writeFile(ARQUIVO, JSON.stringify(banco, null, 2), 'utf8')
-  } catch {
-    // Read-only filesystem: keep the in-memory value so the current process
-    // still reflects the vote instead of failing the request.
+interface BancoD1 {
+  prepare(sql: string): {
+    bind(...valores: unknown[]): {
+      all<T>(): Promise<{ results: T[] }>
+      run(): Promise<unknown>
+    }
   }
 }
 
-const chaveDe = (slug: string, nivel: Nivel) => `${slug}::${nivel}`
+/**
+ * Devolve o binding do D1, ou null quando ele não existe.
+ *
+ * Nunca lança. Em `next build` não há binding, e nenhuma página deve quebrar
+ * por causa disso; em desenvolvimento sem wrangler, o site precisa continuar
+ * navegável mesmo que a calibragem não persista.
+ */
+function banco(): BancoD1 | null {
+  try {
+    const env = getCloudflareContext().env as unknown as { DB?: BancoD1 }
+    return env.DB ?? null
+  } catch {
+    return null
+  }
+}
+
+const SEM_BANCO = 'D1 indisponível: binding "DB" ausente. Nada foi gravado.'
 
 export async function lerCalibragem(slug: string, nivel: Nivel): Promise<Calibragem> {
-  const banco = await ler()
-  return { ...CALIBRAGEM_VAZIA, ...banco[chaveDe(slug, nivel)] }
+  const db = banco()
+  if (!db) return { ...CALIBRAGEM_VAZIA }
+
+  try {
+    const { results } = await db
+      .prepare('SELECT resposta, total FROM calibragem WHERE slug = ? AND nivel = ?')
+      .bind(slug, nivel)
+      .all<{ resposta: string; total: number }>()
+
+    const contagens = { ...CALIBRAGEM_VAZIA }
+    for (const linha of results) {
+      if ((RESPOSTAS as readonly string[]).includes(linha.resposta)) {
+        contagens[linha.resposta as Resposta] = Number(linha.total) || 0
+      }
+    }
+    return contagens
+  } catch (erro) {
+    console.error('Falha ao ler calibragem:', erro)
+    return { ...CALIBRAGEM_VAZIA }
+  }
 }
 
 export async function somarCalibragem(
@@ -72,36 +77,54 @@ export async function somarCalibragem(
   nivel: Nivel,
   resposta: Resposta,
 ): Promise<Calibragem> {
-  return enfileirar(async () => {
-    const banco = await ler()
-    const chave = chaveDe(slug, nivel)
-    const atual = { ...CALIBRAGEM_VAZIA, ...banco[chave] }
-    const atualizado = { ...atual, [resposta]: atual[resposta] + 1 }
+  const db = banco()
+  if (!db) {
+    console.warn(SEM_BANCO)
+    return { ...CALIBRAGEM_VAZIA }
+  }
 
-    await gravar({ ...banco, [chave]: atualizado })
-    return atualizado
-  })
+  try {
+    await db
+      .prepare(
+        `INSERT INTO calibragem (slug, nivel, resposta, total)
+         VALUES (?, ?, ?, 1)
+         ON CONFLICT(slug, nivel, resposta) DO UPDATE SET total = total + 1`,
+      )
+      .bind(slug, nivel, resposta)
+      .run()
+  } catch (erro) {
+    console.error('Falha ao registrar calibragem:', erro)
+  }
+
+  return lerCalibragem(slug, nivel)
 }
 
-const INSCRITOS = join(process.cwd(), '.data', 'inscritos.json')
+/**
+ * @returns `true` quando o e-mail foi aceito e gravado.
+ *
+ * Devolver o resultado, em vez de engolir a falha, é o que permite a ação
+ * dizer ao leitor que a inscrição não foi feita. Era exatamente isso que
+ * faltava na versão em arquivo.
+ */
+export async function registrarInscrito(email: string): Promise<boolean> {
+  const db = banco()
+  if (!db) {
+    console.warn(SEM_BANCO)
+    return false
+  }
 
-export async function registrarInscrito(email: string): Promise<void> {
-  await enfileirar(async () => {
-    let lista: string[] = []
-    try {
-      lista = JSON.parse(await readFile(INSCRITOS, 'utf8')) as string[]
-    } catch {
-      lista = []
-    }
-
-    const normalizado = email.trim().toLowerCase()
-    if (lista.includes(normalizado)) return
-
-    try {
-      await mkdir(dirname(INSCRITOS), { recursive: true })
-      await writeFile(INSCRITOS, JSON.stringify([...lista, normalizado], null, 2), 'utf8')
-    } catch {
-      /* read-only filesystem */
-    }
-  })
+  try {
+    await db
+      .prepare(
+        `INSERT INTO inscritos (email, criado_em)
+         VALUES (?, ?)
+         ON CONFLICT(email) DO NOTHING`,
+      )
+      .bind(email.trim().toLowerCase(), new Date().toISOString())
+      .run()
+    return true
+  } catch (erro) {
+    console.error('Falha ao registrar inscrito:', erro)
+    return false
+  }
 }

@@ -1,9 +1,14 @@
 'use client'
 
 import { useEffect, useOptimistic, useState, useTransition } from 'react'
-import { registrarCalibragem } from '@/app/actions'
+import { lerCalibragemAction, registrarCalibragem } from '@/app/actions'
 import { NIVEL_INFO, type Nivel } from '@/content/types'
-import type { Calibragem as Contagens, Resposta } from '@/lib/store'
+import {
+  CALIBRAGEM_VAZIA,
+  ehResposta,
+  type Calibragem as Contagens,
+  type Resposta,
+} from '@/lib/calibragem'
 
 const OPCOES: { id: Resposta; rotulo: string; dica: string }[] = [
   { id: 'basico', rotulo: 'Básico demais', dica: 'Suba um nível na próxima' },
@@ -14,7 +19,6 @@ const OPCOES: { id: Resposta; rotulo: string; dica: string }[] = [
 interface Props {
   slug: string
   nivel: Nivel
-  iniciais: Contagens
 }
 
 /**
@@ -24,9 +28,14 @@ interface Props {
  * `useOptimistic` applies the reader's answer to the tallies before the Server
  * Action resolves, so the control never feels like it swallowed the click; the
  * authoritative counts returned by the action then replace the guess.
+ *
+ * As contagens chegam por uma ação, depois da montagem, e não como prop vinda
+ * da renderização. É isso que mantém as três páginas de nível estáticas: ler o
+ * banco durante o SSG obrigaria cada uma a virar página com revalidação — para
+ * exibir um número que o leitor só vê depois de votar.
  */
-export function Calibragem({ slug, nivel, iniciais }: Props) {
-  const [contagens, setContagens] = useState(iniciais)
+export function Calibragem({ slug, nivel }: Props) {
+  const [contagens, setContagens] = useState<Contagens>(CALIBRAGEM_VAZIA)
   const [otimista, aplicarOtimista] = useOptimistic(
     contagens,
     (estado, resposta: Resposta): Contagens => ({ ...estado, [resposta]: estado[resposta] + 1 }),
@@ -39,11 +48,55 @@ export function Calibragem({ slug, nivel, iniciais }: Props) {
   useEffect(() => {
     try {
       const salvo = localStorage.getItem(chave)
-      if (salvo === 'basico' || salvo === 'certo' || salvo === 'tecnico') setEscolha(salvo)
+      if (salvo && ehResposta(salvo)) setEscolha(salvo)
     } catch {
       /* ignore */
     }
   }, [chave])
+
+  // As contagens são buscadas só quando a seção chega perto da tela.
+  //
+  // Sem isso, cada visita a um artigo — numa publicação cujas páginas são
+  // todas estáticas e servidas da borda — dispararia uma chamada ao servidor
+  // para semear um número que a maioria dos leitores nunca vê, porque ele só
+  // aparece depois do voto. A maior parte de quem abre o artigo não rola até
+  // aqui, e essas visitas passam a não custar requisição nenhuma.
+  const [ancora, setAncora] = useState<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (!ancora) return
+
+    let ativo = true
+    let buscou = false
+
+    const buscar = () => {
+      if (buscou) return
+      buscou = true
+      lerCalibragemAction(slug, nivel)
+        .then((reais) => {
+          if (ativo) setContagens(reais)
+        })
+        .catch(() => {
+          /* a calibragem é acessória; falhar aqui não pode afetar a leitura */
+        })
+    }
+
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        if (entradas.some((e) => e.isIntersecting)) {
+          buscar()
+          observador.disconnect()
+        }
+      },
+      { rootMargin: '400px' },
+    )
+
+    observador.observe(ancora)
+    return () => {
+      ativo = false
+      observador.disconnect()
+    }
+  }, [ancora, slug, nivel])
 
   function votar(resposta: Resposta) {
     if (escolha) return
@@ -65,6 +118,7 @@ export function Calibragem({ slug, nivel, iniciais }: Props) {
 
   return (
     <section
+      ref={setAncora}
       aria-labelledby="calibragem-titulo"
       className="mt-12 rounded-sm border border-[var(--color-rule)] bg-[var(--color-paper-raised)] px-5 py-5"
     >
