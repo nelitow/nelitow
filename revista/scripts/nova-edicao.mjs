@@ -23,13 +23,17 @@ const MARCADOR = '// <!-- nova-edicao: não remova este comentário, o script in
 const NIVEIS = ['leigo', 'intermediario', 'especialista']
 
 function criarSlug(titulo) {
-  return titulo
+  const completo = titulo
     .toLowerCase()
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-    .slice(0, 60)
+  if (completo.length <= 60) return completo
+  // Corta no último hífen antes do limite: a URL é permanente, e um corte no
+  // meio da palavra ("observaciona", "trg03") fica nela para sempre.
+  const cortado = completo.slice(0, 61)
+  return cortado.slice(0, cortado.lastIndexOf('-'))
 }
 
 function lerArgumentos(argv) {

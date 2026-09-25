@@ -53,6 +53,10 @@ Fluxo sugerido:
 4. Preencher `resumo`, `chamada` e `tempoLeitura` em `meta.ts`.
 5. Virar `publicado: true` e fazer o build.
 
+Os programas que a revista acompanha, com o próximo marco de cada um, ficam em
+[`ACOMPANHAMENTO.md`](ACOMPANHAMENTO.md). Rascunhos podem ter um `PAUTA.md` na pasta com ângulo,
+fontes já verificadas e o que ainda falta conferir.
+
 ### Componentes disponíveis no MDX
 
 Sem import (registrados em `mdx-components.tsx`): `<Caixa>`, `<Figura>`, `<Tabela>`.
