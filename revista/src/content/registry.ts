@@ -20,6 +20,8 @@ import { meta as oQueObservarNaLeituraDeEficaciaDoAbs201 } from './edicoes/o-que
 import { referencias as oQueObservarNaLeituraDeEficaciaDoAbs201Refs } from './edicoes/o-que-observar-na-leitura-de-eficacia-do-abs-201/referencias'
 import { meta as tratamentosParaCalvicieDoMaisAoMenosComprovado } from './edicoes/tratamentos-para-calvicie-do-mais-ao-menos-comprovado/meta'
 import { referencias as tratamentosParaCalvicieDoMaisAoMenosComprovadoRefs } from './edicoes/tratamentos-para-calvicie-do-mais-ao-menos-comprovado/referencias'
+import { meta as umAnticorpoParaFazerNascerDentesOQueSeSabeDoTrg03 } from './edicoes/trg035-anticorpo-anti-usag-1-dentes/meta'
+import { referencias as umAnticorpoParaFazerNascerDentesOQueSeSabeDoTrg03Refs } from './edicoes/trg035-anticorpo-anti-usag-1-dentes/referencias'
 import type { Edicao, Nivel } from './types'
 
 /**
@@ -130,6 +132,15 @@ const EDICOES: Edicao[] = [
       leigo: () => import('./edicoes/tratamentos-para-calvicie-do-mais-ao-menos-comprovado/leigo.mdx'),
       intermediario: () => import('./edicoes/tratamentos-para-calvicie-do-mais-ao-menos-comprovado/intermediario.mdx'),
       especialista: () => import('./edicoes/tratamentos-para-calvicie-do-mais-ao-menos-comprovado/especialista.mdx'),
+    },
+  },
+  {
+    meta: umAnticorpoParaFazerNascerDentesOQueSeSabeDoTrg03,
+    referencias: umAnticorpoParaFazerNascerDentesOQueSeSabeDoTrg03Refs,
+    niveis: {
+      leigo: () => import('./edicoes/trg035-anticorpo-anti-usag-1-dentes/leigo.mdx'),
+      intermediario: () => import('./edicoes/trg035-anticorpo-anti-usag-1-dentes/intermediario.mdx'),
+      especialista: () => import('./edicoes/trg035-anticorpo-anti-usag-1-dentes/especialista.mdx'),
     },
   },
   // <!-- nova-edicao: não remova este comentário, o script insere acima dele -->
